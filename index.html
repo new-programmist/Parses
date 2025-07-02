@@ -32,6 +32,7 @@
   require "js"
 # ---------- 実行例 ----------
 def run()
+$plugins = ["shadow","supershadow","ultrashadow","unshadow"].select{|a|JS.global[:document].getElementById(a)[:checked].to_s == "true"}
 text = JS.global[:document].getElementById("json")[:value].to_s
 #text = JSON.generate(text) if text.class != String
 text = nil if text == ""
@@ -159,8 +160,9 @@ JS.global[:document].getElementById("button").addEventListener("click") do |even
   run()
 end
 </script>
+<label>shadow:<input type="checkbox" id="shadow"/></label>
+<label>supershadow:<input type="checkbox" id="supershadow"/></label>
+<label>ultrashadow:<input type="checkbox" id="ultrashadow"/></label>
+<label>unshadow:<input type="checkbox" id="unshadow"/></label>
 </body>
-
-
-
 </html>
