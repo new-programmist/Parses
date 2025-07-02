@@ -1763,10 +1763,10 @@ def getvariable(variable)
   if !id    
     if $targets[0]
       id = SecureRandom.uuid
-      $targets[0]["variables"][id] = [variable, 0]
+      $targets[0]["variables"][id] = [variable, ""]
     else
       id = SecureRandom.uuid
-      $target["variables"][id] = [variable, 0]
+      $target["variables"][id] = [variable, ""]
     end
   else
     id = id[0]
