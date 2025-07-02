@@ -97,26 +97,38 @@ text ||= JSON.generate({
 parsed_data = parse_text_data(text)
 result = convert_to_scratch_project(parsed_data)
 JS.eval("window._json="+JSON.generate(result).inspect)
-JS.eval('window.downloadZipFromJson=async function() {
-    const zip = new JSZip();
-    const files = JSON.parse(window._json);
+JS.eval("window.downloadZipFromJson = async function () {
+  const zip = new JSZip();
+  const files = JSON.parse(window._json);
 
-    for (const [filename, content] of Object.entries(files)) {
-      zip.file(filename, content);
-    }
-
-    const blob = await zip.generateAsync({ type: "blob" });
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "project.sb3";
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  for (const [filename, content] of Object.entries(files)) {
+    zip.file(filename, content);
   }
 
-  window.downloadZipFromJson();')
+  const blob = await zip.generateAsync({ type: 'blob' });
+  await saveFile(blob); // ← 必ず await
+}
+
+async function saveFile(data) {
+  const options = {
+    types: [
+      {
+        description: 'ZIP Archive',
+        accept: { 'application/zip': ['.zip'] },
+      },
+    ],
+    suggestedName: 'project.zip',
+  };
+
+  try {
+    const handle = await window.showSaveFilePicker(options);
+    const writable = await handle.createWritable();
+    await writable.write(data);
+    await writable.close();
+  } catch (err) {
+    console.warn("Save canceled or failed:", err);
+  }
+}")
 end
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -133,4 +145,3 @@ end
 
 
 </html>
-
