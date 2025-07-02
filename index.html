@@ -1,0 +1,136 @@
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@ruby/3.4-wasm-wasi@2.7.1/dist/browser.script.iife.js"></script>
+  <script>
+  window.evalRuby = function(code) {
+  const element = document.createElement("script");
+  element.type = "text/ruby";
+  element.textContent = code;
+
+  // Add an event listener for the 'load' event
+  element.onload = function() {
+    // Remove the script element from the DOM once it has loaded
+    if (element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+  };
+
+  // Add an event listener for the 'error' event (optional, but good practice)
+  element.onerror = function() {
+    console.error("Error loading or executing dynamic Ruby script.");
+    if (element.parentNode) {
+      element.parentNode.removeChild(element);
+    }
+  };
+
+  document.head.appendChild(element);
+};
+</script>
+  <textarea id="json"></textarea>
+  <script type="text/ruby" src="../tophalf.rb"></script>
+  <script type="text/ruby">
+  require "js"
+# ---------- 実行例 ----------
+def run()
+text = JS.global[:document].getElementById("json")[:value].to_s
+#text = JSON.generate(text) if text.class != String
+text = nil if text == ""
+if ARGV[0]
+  if ARGV[0] == "debug"
+    text ||= ARGV[1]
+  else
+    text ||= ARGV[0]
+  end
+end
+text ||= JSON.generate({
+  "Stage": {
+    "isStage": true,
+    "variables": {
+      "myvar": "0"
+    },
+    "lists": {
+      "aaa": ["aaa", "bbb", "ccc"]
+    },
+    "broadcasts": [
+      "broadcast1"
+    ],
+    "program": [
+      ["event_whenflagclicked", {}],
+      ["motion_gotoxy",{"X":"100","Y":"100"}],
+      ["control_forever",{"SUBSTACK":[
+        ["control_repeat",{
+          "TIMES": [["data_itemoflist",{"LIST":"aaa","INDEX":1}]],
+          "SUBSTACK": [
+            ["data_setvariableto",{"VARIABLE":"myvar","VALUE":[["operator_add",{"NUM1":"1","NUM2":[["get_variable",{"VARIABLE":"myvar"}]]}]]}],
+            ["data_setvariableto",{"VARIABLE":"myvar","VALUE":[["operator_subtract",{"NUM1":"1","NUM2":[["get_variable",{"VARIABLE":"myvar"}]]}]]}],
+            ["data_setvariableto",{"VARIABLE":"myvar","VALUE":[["operator_multiply",{"NUM1":"1","NUM2":[["get_variable",{"VARIABLE":"myvar"}]]}]]}],
+            ["data_setvariableto",{"VARIABLE":"myvar","VALUE":[["operator_divide",{"NUM1":[["operator_[]",{"STRING":[["operator_length",{"STRING":[["data_lengthoflist",{"LIST":"aaa"}]]}]],"LETTER":"1"}]],"NUM2":[["get_variable",{"VARIABLE":"myvar"}]]}]]}]
+          ]
+        }],
+        ["DEFINE",{"name":"name","proc":"DUPLICATOR %sNUM1 %sNUM2","warp":false}],
+        ["data_setvariableto",{"VARIABLE":"myvar","VALUE":[["operator_add",{"NUM1":"1","NUM2":[["get_variable",{"VARIABLE":"myvar"}]]}]]}],
+        ["DEFINE",{"name":"name2","proc":"DUPLICATOR2 %sNUM1 %sNUM2","warp":false}],
+        ["data_setvariableto",{"VARIABLE":"myvar","VALUE":[["operator_add",{"NUM1":"1","NUM2":[["get_variable",{"VARIABLE":"myvar"}]]}]]}],
+        ["event_whenflagclicked",{}],
+      ]}],
+      ["DEFINE",{"name":"test","proc":"a %sNUM1 %sNUM2","warp":false}],
+      ["DEFINE",{"name":"test2","proc":["%sNUM1","^","%sNUM2"],"warp":true}],
+      ["CALL",{"name":"test","inputs":{"NUM1":"1","NUM2":"2"}}],
+      ["CALL",{"name":"test2","inputs":["1",[["argument_reporter_string_number",{"NAME":"NUM1"}]]]}],
+      ["data_addtolist",{"LIST":"aaa","ITEM":[["argument_reporter_string_number",{"NAME":"NUM1"}]]}],
+      ["event_whenbroadcastreceived",{"BROADCAST":"broadcast1"}],
+      ["pen_clear",{}],
+      ["CALL",{"name":"A block without defining","inputs":{"NUM1":"1","NUM2":"2"}}],
+    ]
+  },
+  "Sprite1": {
+    "isStage": false,
+    "broadcasts": [
+      "broadcast2"
+    ],
+    "program": [
+      ["whenbroadcastreceived", {"BROADCAST":"broadcast2"}],
+      ["event_broadcast", {"BROADCAST_INPUT":[["select_broadcast",{"BROADCAST":"broadcast1"}]]}]
+    ]
+  }
+})
+parsed_data = parse_text_data(text)
+result = convert_to_scratch_project(parsed_data)
+JS.eval("window._json="+JSON.generate(result).inspect)
+JS.eval('window.downloadZipFromJson=async function() {
+    const zip = new JSZip();
+    const files = JSON.parse(window._json);
+
+    for (const [filename, content] of Object.entries(files)) {
+      zip.file(filename, content);
+    }
+
+    const blob = await zip.generateAsync({ type: "blob" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "project.sb3";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  window.downloadZipFromJson();')
+end
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+  <button id="button" onclick="window.downloadZipFromJson();">Generate</button>
+<script type="text/ruby">
+JS.global[:document].getElementById("button").addEventListener("click") do |event|
+  run()
+end
+</script>
+</body>
+
+
+
+</html>
+
