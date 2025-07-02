@@ -1542,6 +1542,9 @@ ARGV.each_with_index do |arg, i|
   $plugins << ARGV[i+1] if arg == "--plugin" || arg == "-p"
   $plugins.concat(ARGV[i+1].split(",").flat_map{_1.split(" ")}) if arg == "--plugins" || arg == "-P"
 end
+$plugins.push("supershadow") if $plugins.include?("ultrashadow")
+$plugins.push("shadow") if $plugins.include?("supershadow")
+
 def alias_block(aliasname, originalname)
   return if $blockdatas[aliasname] || !$blockdatas[originalname]
   $blockdatas[aliasname] = $blockdatas[originalname]
@@ -2148,6 +2151,13 @@ def convert_to_scratch_project(parsed_data)
       if plugin("unshadow") && !plugin("supershadow")
         $target["blocks"].map!{|k,b|
           b["shadow"] = false
+          b["inputs"] = b["inputs"].map!{|k,v|[2,v[1]]}
+          b
+        }
+      end
+      if plugin("supershadow")
+        $target["blocks"].map!{|k,b|
+          b["shadow"] = !b["topLevel"] || plugin("ultrashadow")
           b["inputs"] = b["inputs"].map!{|k,v|[1,v[1]]}
           b
         }
