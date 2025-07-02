@@ -250,8 +250,8 @@ end
 #  Block.new("control_forever",{"SUBSTACK":blocks})
 #end
 $hash = {
-  "goto"=>->(*args){Block.new("control_gotoxy",{"X":args[0],"Y":args[1]})},
-  "gotoxy"=>->(*args){Block.new("control_gotoxy",{"X":args[0],"Y":args[1]})},
+  "goto"=>->(*args){Block.new("motion_gotoxy",{"X":args[0],"Y":args[1]})},
+  "gotoxy"=>->(*args){Block.new("motion_gotoxy",{"X":args[0],"Y":args[1]})},
   "deleteoflist"=>->(*args){Block.new("data_deleteoflist",{"LIST":args[0],"INDEX":args[1]})},
   "containsitem"=>->(*args){Block.new("data_listcontainsitem",{"LIST":args[0],"ITEM":args[1]})},
   "listcontainsitem"=>->(*args){Block.new("data_listcontainsitem",{"LIST":args[0],"ITEM":args[1]})},
