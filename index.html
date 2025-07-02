@@ -114,24 +114,40 @@ window.downloadZipFromJson = async function () {
 }
 
 async function saveFile(data) {
-  const options = {
-    types: [
-      {
-        description: 'ZIP Archive',
-        accept: { 'application/zip': ['.zip'] },
-      },
-    ],
-    suggestedName: 'project.zip',
-  };
+  if (window.showSaveFilePicker) {
+    try {
+      const options = {
+        types: [
+          {
+            description: 'ZIP Archive',
+            accept: { 'application/zip': ['.zip','.sb3'] },
+          },
+        ],
+        suggestedName: 'project.sb3',
+      };
 
-  try {
-    const handle = await window.showSaveFilePicker(options);
-    const writable = await handle.createWritable();
-    await writable.write(data);
-    await writable.close();
-  } catch (err) {
-    console.warn('Save canceled or failed:', err);
+      const handle = await window.showSaveFilePicker(options);
+      const writable = await handle.createWritable();
+      await writable.write(data);
+      await writable.close();
+      return;
+    } catch (err) {
+      console.warn('Save canceled or failed:', err);
+      return;
+    }
   }
+
+  // フォールバック（ダウンロードリンクを作成）
+  const url = URL.createObjectURL(data);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'project.sb3';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
 }
 </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
