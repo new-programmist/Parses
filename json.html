@@ -52,12 +52,13 @@
 end</textarea>
 <button id = "button">=>
 </button><textarea id="output" readonly></textarea>
+<script src="./json_core.rb"></script>
   <script type="text/ruby">
     require "js"
 require "json"
 #JS.global[:document].getElementById("textarea")[:value]
 JS.global[:document].getElementById("button").addEventListener("click") do |event|
-require_relative "./json_core.rb"
+eval(JSON_CORE.init)
 eval(JS.global[:document].getElementById("textarea")[:value].to_s)
 
 a = Project.generate(*ARGV)

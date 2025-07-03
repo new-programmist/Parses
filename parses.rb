@@ -1,3 +1,4 @@
+require_relative './defineblocks.rb'
 require_relative './tophalf.rb'
 require 'zip'
 # ---------- 実行例 ----------

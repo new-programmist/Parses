@@ -1,3 +1,6 @@
+module JSON_CORE
+  def self.init
+    code = <<EOF
 require "json"
 class Object
   def superclasses
@@ -6,7 +9,7 @@ class Object
 end
 class Project
   def self.generate(*args)
-    return "{\"Stage\":{\"isStage\":true}}"
+    return "{\\\"Stage\\\":{\\\"isStage\\\":true}}"
   end
 end
 class Block
@@ -226,7 +229,7 @@ def flat_require(code)
   require "/tmp/flat_require.rb"
 end
 $hash.each do |k,v|
-  eval("def #{k}(*args)\n $hash[\"#{k}\"].call(*args)\n end")
+  eval("def \#{k}(*args)\\n $hash[\\\"\#{k}\\\"].call(*args)\\n end")
 end
 ObjectSpace.each_object(Class) do |klass|
   $hash[klass.name.to_s] = ->(*args){klass.new(*args)} if klass.ancestors.include?(Block) && !$hash[klass.name.to_s] && klass.respond_to?(:new)
@@ -238,5 +241,9 @@ def main.method_missing(name,*args)
     $hash[name.to_s].call(*args)
   else
     super
+  end
+end
+EOF
+  return code
   end
 end

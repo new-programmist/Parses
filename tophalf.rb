@@ -2,7 +2,7 @@ require 'json'
 require 'fileutils'
 require 'digest'
 null = nil
-require_relative "./defineblocks.rb"
+# require_relative "./defineblocks.rb"
 $supportedblocks = $blockdatas.keys.sort
 $allblocksinput = ($supportedblocks + $allblocks).uniq
 #$allblocksinput.each do |b|
