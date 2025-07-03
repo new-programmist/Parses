@@ -1,4 +1,4 @@
-module JSON_CORE
+module Jsoncore
   def self.init
     code = <<EOF
 require "json"

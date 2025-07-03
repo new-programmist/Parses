@@ -58,7 +58,7 @@ end</textarea>
 require "json"
 #JS.global[:document].getElementById("textarea")[:value]
 JS.global[:document].getElementById("button").addEventListener("click") do |event|
-eval(JSON_CORE.init)
+eval(Jsoncore.init)
 eval(JS.global[:document].getElementById("textarea")[:value].to_s)
 
 a = Project.generate(*ARGV)
