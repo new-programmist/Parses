@@ -10,6 +10,14 @@ class Object
     self
   end
 end
+class Hash
+  def to_j
+    self.keys.each do |i|
+      self[i] = self[i].to_j
+    end
+    self.dup
+  end
+end
 class Project
   def self.generate(*args)
     return "{\\\"Stage\\\":{\\\"isStage\\\":true}}"
