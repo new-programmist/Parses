@@ -25,7 +25,8 @@ class Project
       "Stage" => {
         "variables" => {
           "return": 0,
-          "myvar": 0
+          "myvar": "123",
+          "myvar2": "123",
         },
         "program" => [
           procedure("test","test %sa %sb",true),
@@ -37,6 +38,13 @@ class Project
     },
     {
       "Stage" => {
+        "variables" => {
+          "return": 0,
+          "myvar2": "123"
+        },
+        "lists" => {
+          "mylist": [1,2,3],
+        },
         "program" => [ # ["CALL", "DEFINE", "argument_reporter_boolean", "argument_reporter_string_number", "color", "control_forever", "control_if", "control_if_else", "control_repeat", "control_repeat_until", "control_stop", "control_wait_until", "control_while", "coreExample_exampleOpcode", "coreExample_exampleWithInlineImage", "data_addtolist", "data_changevariableby", "data_deletealloflist", "data_deleteoflist", "data_insertatlist", "data_itemnumoflist", "data_itemoflist", "data_lengthoflist", "data_listcontainsitem", "data_replaceitemoflist", "data_setvariableto", "event_broadcast", "event_broadcastandwait", "event_whenbroadcastreceived", "event_whenflagclicked", "get_isturbowarp", "get_variable", "input", "motion_gotoxy", "operator_abs", "operator_acos", "operator_add", "operator_and", "operator_asin", "operator_atan", "operator_ceiling", "operator_contains", "operator_cos", "operator_divide", "operator_equals", "operator_floor", "operator_gt", "operator_join", "operator_length", "operator_letter_of", "operator_ln", "operator_log", "operator_lt", "operator_mathop", "operator_mod", "operator_multiply", "operator_not", "operator_or", "operator_random", "operator_round", "operator_sin", "operator_sqrt", "operator_subtract", "operator_tan", "pen_clear", "pen_menu_colorParam", "pen_pendown", "pen_penup", "pen_setPenColorParamTo", "pen_setPenColorToColor", "pen_setpensizeto", "procedures_call", "procedures_definition", "procedures_prototype", "select_broadcast", "select_key", "sensing_dayssince2000", "sensing_keypressed", "sensing_mousedown", "sensing_mousex", "sensing_mousey", "sensing_of", "sensing_of_object_menu", "sound_playuntildone", "sound_setvolumeto", "sound_sounds_menu", "translate_getTranslate", "translate_getViewerLanguage", "translate_menu_languages"]a
           define("test",["procedure","%sa","%bb"],true),
           setvar("return",arg_report("a") + bool_report("b")),
@@ -73,8 +81,8 @@ class Project
           setvar("z",arg("variable","variable")),  # variable
           setvar("z",arg("list","list")),  # list
           setvar("aa",shadow(arg(0)+arg(1))),
-          
-        ]# + (2..10).flat_map{
+          setvar("myvar2",var("myvar")),         
+        ],# + (2..10).flat_map{
         #  [setvar("x",arg(_1,_1.to_s))]
         #}
       }
