@@ -6,6 +6,9 @@ class Object
   def superclasses
     self.class.ancestors
   end
+  def to_j
+    self
+  end
 end
 class Project
   def self.generate(*args)
@@ -23,15 +26,9 @@ class Block
   def to_j
     [@block, @stats.map{|k,v|
       if v.class == Array
-        if v.all?{|b| b.superclasses.include?(Block)}
-          {k => v.map(&:to_j)}
-        else
-          {k => v}
-        end
-      elsif v.superclasses.include?(Block)
-        {k => v.to_j}
+        {k => v.map(&:to_j)}
       else
-        {k => v}
+        {k => v.to_j}
       end
     }.reduce({},&:merge)]
   end
