@@ -2,7 +2,7 @@ require 'json'
 require 'fileutils'
 require 'digest'
 null = nil
-require_relative "./defineblocks.rb"
+# require_relative "./defineblocks.rb"
 $supportedblocks = $blockdatas.keys.sort
 $allblocksinput = ($supportedblocks + $allblocks).uniq
 #$allblocksinput.each do |b|
@@ -236,7 +236,7 @@ def getvariable(variable)
   if !id
     id = ($targets[0]? $targets[0]["variables"].to_a.select{|id,(name, value)| name == variable}[0] : nil)
   else
-    id = id[0]
+    return [variable, id[0]]
   end
   if !id    
     if $targets[0]
@@ -257,7 +257,7 @@ def getlist(list)
   if !id
     id = ($targets[0]? $targets[0]["lists"].to_a.select{|id,(name, value)| name == list}[0] : nil)
   else
-    id = id[0]
+    return [list, id[0]]
   end
   if !id
     if $targets[0]
@@ -279,7 +279,7 @@ def getbroadcast(broadcast)
   if !id
     id = ($targets[0]? $targets[0]["broadcasts"].to_a.select{|id,name| name == broadcast}[0] : nil)
   else
-    id = id[0]
+    return [broadcast, id[0]]
   end
   if !id
     if $targets[0]
@@ -523,6 +523,16 @@ class Hash
       self[k] = block.call(k, v)
     end
   end
+  def select!(&block)
+    self.each do |k, v|
+      self.delete(k) unless block.call(k, v)
+    end
+  end
+  def reject!(&block)
+    self.each do |k, v|
+      self.delete(k) if block.call(k, v)
+    end
+  end
 end
 def convert_to_scratch_project(parsed_data)
   $targets = []
@@ -617,6 +627,33 @@ def convert_to_scratch_project(parsed_data)
         $target["broadcasts"][broadcast_id] = broadcast_name
       end
     end
+    if props["_JSONHACK_SetObjectId"]
+      # [{"type":"list","name":"List1","id":"__id"},{"type":"variable","name":"Variable1","id":"__id"}]
+      props["_JSONHACK_SetObjectId"].each do |item|
+        if item["type"] == "list"
+          item_data = $target["lists"].select{|id, (name, value)| name == item["name"]}
+          if item_data.size > 0
+            item_data = item_data.values[0][1] 
+          else
+            item_data = nil
+          end
+          $target["lists"].reject!{|id, (name, value)| name == item["name"]}
+          $target["lists"][item["id"]] = [item["name"], item_data] 
+        elsif item["type"] == "variable"
+          item_data = $target["variables"].select{|id, (name, value)| name == item["name"]}
+          if item_data.size > 0
+            item_data = item_data.values[0][1] 
+          else
+            item_data = nil
+          end
+          $target["variables"].reject!{|id, (name, value)| name == item["name"]}
+          $target["variables"][item["id"]] = [item["name"], item_data] 
+        elsif item["type"] == "broadcast"
+          $target["broadcasts"].reject!{|id, name| name == item["name"]}
+          $target["broadcasts"][item["id"]] = item["name"]
+        end
+      end
+    end
 
     # プログラム
     if props["program"] && !props["program"].to_s.strip.empty?
@@ -641,6 +678,8 @@ def convert_to_scratch_project(parsed_data)
         }
       end
     end 
+    $target["variables"].reject!{|id, (name, value)| value.nil?}
+    $target["lists"].reject!{|id, (name, value)| value.nil?}
     $targets << $target
   end
   {

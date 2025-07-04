@@ -1,3 +1,4 @@
+require_relative './defineblocks.rb'
 require_relative './tophalf.rb'
 require 'zip'
 # ---------- 実行例 ----------
@@ -64,7 +65,7 @@ text ||= JSON.generate({
 
 parsed_data = parse_text_data(text)
 result = convert_to_scratch_project(parsed_data)
-puts JSON.pretty_generate(result) if ARGV.include?("debug")
+puts JSON.pretty_generate(JSON.parse(result["project.json"])) if ARGV.include?("debug")
 zipfile_name = "project.sb3"
 File.write(zipfile_name, "")
 Zip::File.open(zipfile_name, Zip::File::CREATE) do |zipfile|

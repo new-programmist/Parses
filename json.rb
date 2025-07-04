@@ -1,4 +1,5 @@
 require_relative "./json_core.rb"
+eval Jsoncore.init
 
 if !File.exist?("./main.rb")
   puts "{\"Stage\":{\"isStage\":true}}"

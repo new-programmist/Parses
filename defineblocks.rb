@@ -1,3 +1,4 @@
+require 'json'
 $blockdatas = JSON.parse('{
   "event_whenflagclicked": {
     "blockType": "hatblock",
