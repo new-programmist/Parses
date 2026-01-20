@@ -59,7 +59,7 @@ class Block
     BooleanBlock.new("operator_equals", {"OPERAND1":to_a, "OPERAND2":other.to_a})
   end
   def !=(other)
-    !(BooleanBlock.new("operator_equals", {"OPERAND1":to_a, "OPERAND2":other.to_a}))
+    BooleanBlock.new("operator_equals", {"OPERAND1":to_a, "OPERAND2":other.to_a}).not
   end
   def >(other)
     BooleanBlock.new("operator_gt", {"OPERAND1":to_a, "OPERAND2":other.to_a})
@@ -228,6 +228,10 @@ $hash = {
   "var"=>->(*args){Block.new("get_variable",{"VARIABLE":args[0]})},
   "setvar"=>->(*args){Block.new("data_setvariableto",{"VARIABLE":args[0],"VALUE":args[1]})},
   "list"=>->(*args){Block.new("get_list",{"LIST":args[0]})},
+  "if"=>->(*args){Block.new("control_if_else",{"CONDITION":args[0],"SUBSTACK1":args[1],"SUBSTACK2":args[2]})},
+  "ifelse"=>->(*args){Block.new("control_if_else",{"CONDITION":args[0],"SUBSTACK1":args[1],"SUBSTACK2":args[2]})},
+  "while"=>->(*args){Block.new("control_while",{"CONDITION":args[0],"SUBSTACK":args[1]})},
+  "until"=>->(*args){Block.new("control_until",{"CONDITION":args[0],"SUBSTACK":args[1]})},
 }
 def flat_require(code)
   File.write("/tmp/flat_require.rb",code)
