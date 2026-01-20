@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Resizable Iframe Split View</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    iframe {
+      border: none;
+      height: 100%;
+    }
+
+    #left {
+      width: 50%;
+      min-width: 200px;
+    }
+
+    #right {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #divider {
+      width: 6px;
+      background-color: #ccc;
+    }
+
+    #divider:hover {
+      background-color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <iframe
+      id="left"
+      src="https://new-programmist.github.io/Parses/json.html">
+    </iframe>
+
+    <div id="divider"></div>
+
+    <iframe
+      id="right"
+      src="https://new-programmist.github.io/Parses/parses.html">
+    </iframe>
+  </div>
+
+  
+</body>
+</html>
