@@ -15,4 +15,4 @@ parses
 ```
 warning: run owerwrites project.sb3
 
-or open https://new-programmist.github.io/Parses to try in browser
+open https://new-programmist.github.io/Parses to try in browser
