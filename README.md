@@ -5,7 +5,14 @@ cd Parses/
 echo "alias parses='$PWD/parses.sh'" >> ~/.bashrc
 source ~/.bashrc
 chmod +x parses.sh
-parses
 ```
 
-or open https://new-programmist.github.io/Parses
+to test/run:
+
+```
+cd example
+parses
+```
+warning: run owerwrites project.sb3
+
+or open https://new-programmist.github.io/Parses to try in browser
